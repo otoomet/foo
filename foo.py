@@ -1,10 +1,7 @@
+#!/usr/bin/python3
 import pygame as pg
 import random as r
 pg.init()
-pg.mixer.init()
-pop = pg.mixer.Sound("pop.wav")
-blip = pg.mixer.Sound("blip.wav")
-blap = pg.mixer.Sound("blap.wav")
 pic = pg.image.load("hullmyts.png")
 pg.font
 screen = pg.display.set_mode((0,0), pg.RESIZABLE)
@@ -16,7 +13,7 @@ dist = 5
 up = True
 down = True
 left = True
-right = True
+right = True 
 mup = False
 mdown = False
 mleft = False
