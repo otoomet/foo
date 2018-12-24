@@ -25,6 +25,7 @@ dfont = pg.font.SysFont("Times", 32)
 pfont = pg.font.SysFont("Times", 50)
 pause = False
 gameover = False
+jp = 20
 player = pg.sprite.GroupSingle()
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
@@ -33,6 +34,8 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.yvel = 0
+        self.onair = True
     def update(self, mup, mdown, mleft, mright):
         if self.rect.y <= 0:
             up = False
@@ -50,14 +53,23 @@ class Player(pg.sprite.Sprite):
             right = False
         else:
             right = True
-        if mup and up:
-            self.rect.y -= dist 
+        if mup:
+            self.yvel -= jp
         if mdown and down:
             self.rect.y += dist
         if mleft and left:
             self.rect.x -= dist
         if mright and right:
             self.rect.x += dist
+        if self.rect.y + self.yvel <= screenh-250:
+            self.onair = True
+        else:
+            self.onair = False
+        self.rect.y += self.yvel
+        if self.onair:
+            self.yvel += 1
+        else:
+            self.yvel=0
 def reset():
     lifes = 5
     player.empty()
@@ -83,9 +95,7 @@ while do:
             elif event.key == pg.K_r:
                 reset()
         elif event.type == pg.KEYUP:
-            if event.key == pg.K_UP:
-                mup = False
-            elif event.key == pg.K_DOWN:
+            if event.key == pg.K_DOWN:
                 mdown = False
             elif event.key == pg.K_LEFT:
                 mleft = False
@@ -135,6 +145,7 @@ while do:
     text_rect.y = 10
     screen.blit(text,text_rect)
     player.update(mup,mdown, mleft, mright)
+    mup = False
     player.draw(screen)
     pg.display.update()
     timer.tick(60)
