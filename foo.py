@@ -3,13 +3,27 @@ import pygame as pg
 import random as r
 pg.init()
 pic = pg.image.load("hullmyts.png")
+picWidth = 0.05
+# width of pick in terms of pct of screen width
 dpic = pg.image.load("khullmyts2.png")
+dpicWidth = picWidth
 plt = pg.image.load("platform.png")
-pg.font
+pltWidth = 0.08
+
 screen = pg.display.set_mode((0,0), pg.RESIZABLE)
 screenw = screen.get_width()
 screenh = screen.get_height()
 pg.display.set_caption("sgfndfhgkdfbrhgfdscergchdfnkgsdfkjghsvrshtgskrutgspldrutskrdjhtgankjhfairuthvaleiruthacpmeriuthvalneriutelrimtgbajnflkauhrntkvuahlarhtbakvjrhgnakterutvhndkhfaldrjvankrjhgcnakfrhmvladuhgsnkdfhsldrghsvlkrrjtghsvrthgslkjvfsklgshlkruvslkjghslveirghmslvdjgvslnuygrnuhavtleritbhanoerigksadrjghdjhgnliudrgndrhgaserghvrkdighaerliubyakerhnalerijthaelrithaceriutvbaeprtivauiayhrtvalbrtvbalerrhgtvkprdhtgncsketgsnkdfhgksnerytgkcgspguksjhtkucdhgnvksg")
+
+## Scale images to the suitable size on the screen
+picW = picWidth*screen.get_width()
+picH = pic.get_height()*picW/pic.get_width()
+pic = pg.transform.scale(pic, (int(picW), int(picH)))
+##
+pltW = pltWidth*screen.get_width()
+pltH = plt.get_height()*pltW/plt.get_width()
+plt = pg.transform.scale(plt, (int(pltW), int(pltH)))
+
 do = True
 dist = 5
 up = True
