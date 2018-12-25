@@ -24,6 +24,9 @@ pltW = pltWidth*screen.get_width()
 pltH = plt.get_height()*pltW/plt.get_width()
 plt = pg.transform.scale(plt, (int(pltW), int(pltH)))
 
+## ground thickness: how far down (in pixels) will the CH fall
+groundThickness = int(0.06*screen.get_height()) + pic.get_height()
+
 do = True
 dist = 5
 up = True
@@ -59,7 +62,7 @@ class Player(pg.sprite.Sprite):
             up = False
         else:
             up = True
-        if self.rect.y >= screenh-120:
+        if self.rect.y >= screenh - groundThickness:
             down = False
         else:
             down = True
@@ -87,7 +90,7 @@ class Player(pg.sprite.Sprite):
                 self.xvel += 0.5
             else:
                 self.xvel += 5
-        if self.rect.y + self.yvel <= screenh-250:
+        if self.rect.y + self.yvel <= screenh - groundThickness:
             self.onair = True
         else:
             self.onair = False
