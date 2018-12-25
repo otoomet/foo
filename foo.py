@@ -9,6 +9,7 @@ screen = pg.display.set_mode((0,0), pg.RESIZABLE)
 screenw = screen.get_width()
 screenh = screen.get_height()
 pg.display.set_caption("movepic")
+gw = pg.transform.scale(bgImg, (screen.get_width(), screen.get_height()))
 ex = 0
 do = True
 dist = 5
@@ -130,17 +131,8 @@ while do:
         screen.blit(text,text_rect)
         pg.display.update()
         gameover = True
-    while gameover:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                gameover = False
-                do = False
-            elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_r:
-                    gameover = False
-                    reset()
-    #screen.fill((0,0,0))
-    screen.blit(bgImg, (ex, 0))
+    screen.blit(gw, (ex, 0))
+    screen.blit(gw, (ex - gw.get_width(), 0))
     ex += 1
     if ex > screen.get_width():
         ex = 0
