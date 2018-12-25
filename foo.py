@@ -3,11 +3,13 @@ import pygame as pg
 import random as r
 pg.init()
 pic = pg.image.load("hullmyts.png")
+bgImg = pg.image.load("green-wave.jpg")
 pg.font
 screen = pg.display.set_mode((0,0), pg.RESIZABLE)
 screenw = screen.get_width()
 screenh = screen.get_height()
 pg.display.set_caption("movepic")
+ex = 0
 do = True
 dist = 5
 up = True
@@ -137,7 +139,11 @@ while do:
                 if event.key == pg.K_r:
                     gameover = False
                     reset()
-    screen.fill((0,0,0))
+    #screen.fill((0,0,0))
+    screen.blit(bgImg, (ex, 0))
+    ex += 1
+    if ex > screen.get_width():
+        ex = 0
     score = ("Lifes: " + str(lifes))
     text = font.render(score, True, (255,255,255))
     text_rect = text.get_rect()
