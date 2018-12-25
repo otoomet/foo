@@ -3,11 +3,13 @@ import pygame as pg
 import random as r
 pg.init()
 pic = pg.image.load("hullmyts.png")
+dpic = pg.image.load("khullmyts2.png")
+plt = pg.image.load("platform.png")
 pg.font
 screen = pg.display.set_mode((0,0), pg.RESIZABLE)
 screenw = screen.get_width()
 screenh = screen.get_height()
-pg.display.set_caption("movepic")
+pg.display.set_caption("sgfndfhgkdfbrhgfdscergchdfnkgsdfkjghsvrshtgskrutgspldrutskrdjhtgankjhfairuthvaleiruthacpmeriuthvalneriutelrimtgbajnflkauhrntkvuahlarhtbakvjrhgnakterutvhndkhfaldrjvankrjhgcnakfrhmvladuhgsnkdfhsldrghsvlkrrjtghsvrthgslkjvfsklgshlkruvslkjghslveirghmslvdjgvslnuygrnuhavtleritbhanoerigksadrjghdjhgnliudrgndrhgaserghvrkdighaerliubyakerhnalerijthaelrithaceriutvbaeprtivauiayhrtvalbrtvbalerrhgtvkprdhtgncsketgsnkdfhgksnerytgkcgspguksjhtkucdhgnvksg")
 do = True
 dist = 5
 up = True
@@ -25,8 +27,9 @@ dfont = pg.font.SysFont("Times", 32)
 pfont = pg.font.SysFont("Times", 50)
 pause = False
 gameover = False
-jp = 20
-player = pg.sprite.GroupSingle()
+jp = 30
+player = pg.sprite.Group()
+platform = pg.sprite.Group()
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
@@ -35,6 +38,7 @@ class Player(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.yvel = 0
+        self.xvel = 0
         self.onair = True
     def update(self, mup, mdown, mleft, mright):
         if self.rect.y <= 0:
@@ -45,22 +49,30 @@ class Player(pg.sprite.Sprite):
             down = False
         else:
             down = True
-        if self.rect.x <= 0:
+        if self.rect.x+ self.xvel <= 0:
             left = False
+            self.xvel = 0
         else:
             left = True
-        if self.rect.x >= screenw-148:
+        if self.rect.x + self.xvel >= screenw-148:
             right = False
+            self.xvel=0
         else:
             right = True
-        if mup:
+        if mup:# and not self.onair:
             self.yvel -= jp
         if mdown and down:
             self.rect.y += dist
         if mleft and left:
-            self.rect.x -= dist
+            if self.onair:
+                self.xvel -= 0.5
+            else:
+                self.xvel -= 5
         if mright and right:
-            self.rect.x += dist
+            if self.onair:
+                self.xvel += 0.5
+            else:
+                self.xvel += 5
         if self.rect.y + self.yvel <= screenh-250:
             self.onair = True
         else:
@@ -70,6 +82,21 @@ class Player(pg.sprite.Sprite):
             self.yvel += 1
         else:
             self.yvel=0
+        if left and right:
+            self.rect.x += self.xvel
+        if not self.onair:
+            self.xvel = round(self.xvel*0.4)
+    def getxy(self):
+        return(self.rect.x,self.rect.y)
+class Platform(pg.sprite.Sprite):
+    def __init__(self,x,y):
+        pg.sprite.Sprite.__init__(self)
+        self.image = plt
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+    def getxy(self):
+        return(self.rect.x,self.rect.y)
 def reset():
     lifes = 5
     player.empty()
@@ -77,6 +104,8 @@ def reset():
     player.add(hullmyts)
 hullmyts = Player(screenw/2,screenh/2)
 player.add(hullmyts)
+platboi = Platform(screenw/2,screenh/2)
+platform.add(platboi)
 while do:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -95,7 +124,9 @@ while do:
             elif event.key == pg.K_r:
                 reset()
         elif event.type == pg.KEYUP:
-            if event.key == pg.K_DOWN:
+            if event.key == pg.K_UP:
+                mup = False
+            elif event.key == pg.K_DOWN:
                 mdown = False
             elif event.key == pg.K_LEFT:
                 mleft = False
@@ -118,7 +149,6 @@ while do:
         screen.blit(text,text_rect)
         pg.display.update()
     if lifes == 0:
-        blap.play()
         uded = "GAME OVER"
         dtext = dfont.render(uded, True, (255,0,0))
         dtext_rect = dtext.get_rect()
@@ -137,6 +167,8 @@ while do:
                 if event.key == pg.K_r:
                     gameover = False
                     reset()
+    col = pg.sprite.spritecollide(hullmyts, platform,False)
+    #if len(col) > 0:
     screen.fill((0,0,0))
     score = ("Lifes: " + str(lifes))
     text = font.render(score, True, (255,255,255))
@@ -146,6 +178,7 @@ while do:
     screen.blit(text,text_rect)
     player.update(mup,mdown, mleft, mright)
     mup = False
+    platform.draw(screen)
     player.draw(screen)
     pg.display.update()
     timer.tick(60)
