@@ -66,7 +66,7 @@ class Player(pg.sprite.Sprite):
             down = False
         else:
             down = True
-        if self.rect.x+ self.xvel <= 0:
+        if self.rect.x + self.xvel <= 0:
             left = False
             self.xvel = 0
         else:
